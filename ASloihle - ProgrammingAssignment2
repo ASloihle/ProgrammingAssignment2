@@ -1,0 +1,58 @@
+## This set of functions will invert a matrix that is passed to it, and stores the 
+##inverted matrix in a vector. If it is passed a matrix for which the inverse has already
+##been calculated, it will simply retrieve ("get") the inverted matrix from the cache, 
+##instead of re-calculating the inverse again. If it has not already been calculated,
+##it will calculate the inverse, store it in the cache, and then return the new inverse.
+
+##You can run this code with the following (this code comes from the R help file for the
+##"Solve" function): 
+##hilbert <- function(n) { i <- 1:n; 1 / outer(i - 1, i, "+") }
+##h8 <- hilbert(8); h8
+##Sav <- makeCacheMatrix(h8)
+##cacheSolve(Sav)
+ 
+
+## The first function creates and returns a list of functions that "get" (retrieve and print)
+##and "set"(add to the cache) the values that
+##are passed to it, as well as a cache the matrices themselves and their inverses. 
+
+ makeCacheMatrix <- function(x = matrix()) { 
+  
+   i <- NULL
+   set <- function(y) {
+     x <<- y
+     i <<- NULL
+   }
+   get <- function() x
+   setinverse <- function(solve) i <<- solve
+   getinverse <- function() i
+   list(set = set, get = get,
+        setinverse = setinverse,
+        getinverse = getinverse)
+ } 
+ 
+ 
+
+##This function will determine whether or not the matrix being passed to it has already been
+##calculated. If it has, it will simply retrieve the previously calculated inverse matrix
+##from the cache, print it, and stop the function. If it has not been calculated, it will
+##calculate the inverse, add it to the cache, and return it.
+ 
+
+cacheSolve <- function(x, ...) { 
+        
+  
+  i <- x$getinverse()
+  if(!is.null(i)) {
+    message("getting cached data")
+    return(i)
+  }
+  data <- x$get()
+  i <- solve(data, ...)
+  x$setinverse(i)
+  i
+   } 
+ 
+ 
+ 
+ 
